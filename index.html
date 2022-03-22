@@ -18,7 +18,7 @@
                 <form class="flex flex-col pt-3 md:pt-8" onsubmit="event.preventDefault();">
                   <div class="flex flex-col pt-4">
                       <label class="text-lg">Spotify token</label>
-                      <input x-model="token" type="text" :disabled="looping" placeholder="Token" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                      <input x-model="token" type="password" :disabled="looping" placeholder="Token" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
                   </div>
                     <div class="flex flex-col pt-4">
                         <label class="text-lg">Start from (seconds)</label>
@@ -30,8 +30,6 @@
                         <input x-model="duration" type="integer" :disabled="looping" placeholder="45" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
 
-                    <p x-show="looping" x-text="counter"></p>
-
                     <button type="button" class="bg-black text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8" @click="toggle()" x-text="submitValue()"/>
                 </form>
             </div>
@@ -39,7 +37,7 @@
 
         <!-- Image Section -->
         <div class="w-1/2 shadow-2xl">
-            <img class="object-cover w-full h-screen hidden md:block" src="https://source.unsplash.com/IXUM4cJynP0">
+            <img class="object-cover w-full h-screen hidden md:block" src="https://source.unsplash.com/YrtFlrLo2DQ">
         </div>
     </div>
 
@@ -76,7 +74,8 @@
         reset() {
           this.counter = 0
 
-          let durationMs = this.duration * 1000;
+          let durationMs = this.startingFrom * 1000;
+
           var url = "https://api.spotify.com/v1/me/player/seek?position_ms=" + durationMs.toString();
 
           var xhr = new XMLHttpRequest();
@@ -103,7 +102,10 @@
 
         toggle() {
           this.looping = !this.looping;
-          this.counter = 0;
+
+          if(this.looping) {
+            this.reset();
+          }
         }
       }
     }
