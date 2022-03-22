@@ -16,13 +16,17 @@
             <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
                 <p class="text-center text-3xl">Skip.</p>
                 <form class="flex flex-col pt-3 md:pt-8" onsubmit="event.preventDefault();">
+                  <div class="flex flex-col pt-4">
+                      <label class="text-lg">Spotify token</label>
+                      <input x-model="token" type="text" :disabled="looping" placeholder="Token" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                  </div>
                     <div class="flex flex-col pt-4">
-                        <label class="text-lg">Start fra (sekunder)</label>
+                        <label class="text-lg">Start from (seconds)</label>
                         <input x-model="startingFrom" type="integer" :disabled="looping" placeholder="150" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
 
                     <div class="flex flex-col pt-4">
-                        <label class="text-lg">Spil i (sekunder)</label>
+                        <label class="text-lg">Play for (seconds)</label>
                         <input x-model="duration" type="integer" :disabled="looping" placeholder="45" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
 
@@ -46,6 +50,7 @@
     let repeatApp = () => {
       return {
         looping: false,
+        token: null,
         duration: 0,
         startingFrom: 0,
         counter: 0,
@@ -63,14 +68,33 @@
             if(this.counter == this.duration) {
               this.reset()
             } else {
-              this.counter += 1;  
+              this.counter += 1;
             }
           }
         },
 
         reset() {
-          this.counter = 0;
-          console.log('resetting');
+          this.counter = 0
+
+          let durationMs = this.duration * 1000;
+          var url = "https://api.spotify.com/v1/me/player/seek?position_ms=" + durationMs.toString();
+
+          var xhr = new XMLHttpRequest();
+          xhr.open("PUT", url);
+
+          let token = "Bearer " + this.token
+
+          xhr.setRequestHeader("Accept", "application/json");
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.setRequestHeader("Authorization", token);
+
+          xhr.onreadystatechange = function () {
+             if (xhr.readyState === 4) {
+                console.log(xhr.status);
+                console.log(xhr.responseText);
+             }};
+
+          xhr.send();
         },
 
         submitValue() {
