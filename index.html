@@ -32,7 +32,21 @@
 
                     <button type="button" class="bg-black text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8" @click="toggle()" x-text="submitValue()"/>
                 </form>
-            </div>
+
+                <button type="button" class="bg-black text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8" @click="addPreset()">
+                  Add preset
+                </button>
+
+                <div class="presets">
+                  <ul>
+                    <template x-for="(preset, index) in presets">
+                      <li>
+                        <button type="button" :disabled="looping" class="bg-black text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8" @click="setPreset(index)" x-text="preset.label" />
+                      </li>
+                    </template>
+                  </ul>
+                </div>
+            </div
         </div>
 
         <!-- Image Section -->
@@ -52,6 +66,7 @@
         duration: 0,
         startingFrom: 0,
         counter: 0,
+        presets: [],
 
         init() {
           let self = this;
@@ -74,9 +89,9 @@
         reset() {
           this.counter = 0
 
-          let durationMs = this.startingFrom * 1000;
+          let startingFromMs = this.startingFrom * 1000;
 
-          var url = "https://api.spotify.com/v1/me/player/seek?position_ms=" + durationMs.toString();
+          var url = "https://api.spotify.com/v1/me/player/seek?position_ms=" + startingFromMs.toString();
 
           var xhr = new XMLHttpRequest();
           xhr.open("PUT", url);
@@ -106,6 +121,25 @@
           if(this.looping) {
             this.reset();
           }
+        },
+
+        addPreset() {
+          let labelCount = this.presets.length + 1;
+
+          let preset = {
+            'label': 'preset-' + labelCount.toString(),
+            'startingFrom': this.startingFrom,
+            'duration': this.duration
+          }
+
+          this.presets.push(preset);
+        },
+
+        setPreset(index) {
+          let preset = this.presets[index];
+
+          this.startingFrom = preset.startingFrom
+          this.duration = preset.duration;
         }
       }
     }
