@@ -4,4 +4,4 @@ Have you ever listened to a good song on Spotify, and found a specific part of t
 
 ## How does it work
 
-Obtain your Spotify token and simply type in when the best part starts, how long it lasts and press "loop". Now you can enjoy those legendary 47 seconds, until your er falls off!
+Obtain your Spotify token and simply type in when the best part starts, how long it lasts and press "loop". Now you can enjoy those legendary 47 seconds, until your ear falls off!
